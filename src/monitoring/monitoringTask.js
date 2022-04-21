@@ -24,7 +24,7 @@ async function update() {
 
         let embed = new MessageEmbed();
         if (jkaResponse.clients.length === 0) {
-            const emoteOnline = guild.emojis.cache.find((emoji) => emoji.name === "greendot") === "undefined" ? "\uD83D\uDFE2" : guild.emojis.cache?.find((emoji) => emoji.name === "greendot");
+            const emoteOnline = guild.emojis.cache.find((emoji) => emoji.name === "greendot") === "undefined" ? "\uD83D\uDFE2" : guild.emojis.cache.find((emoji) => emoji.name === "greendot");
 
             embed
                 .setTitle(`${emoteOnline} **0/${jkaResponse.cvars.sv_maxclients}** | **${jkaResponse.cvars.g_gametype}** | **${await normalizeJkaString(jkaResponse.cvars.sv_hostname)}**`)
