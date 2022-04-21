@@ -21,7 +21,7 @@ async function start() {
         await client.login(process.env.DISCORD_TOKEN);
 
         client.once("ready", async (e) => {
-            //console.log('e', e)
+            console.log(`${client.user.tag}`)
         });
 
         task.start()
