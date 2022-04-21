@@ -10,4 +10,4 @@ const schema = new mongoose.Schema({
   index: { type: Number },
 });
 
-export default mongoose.model("Monitoring", schema);
+export default mongoose.model("Monitoring", schema)

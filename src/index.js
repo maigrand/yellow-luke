@@ -1,48 +1,47 @@
-import mongoose from "mongoose";
-import {client} from "./client.js";
-import {task} from './monitoring/monitoringTask.js'
+import mongoose from 'mongoose'
+import {client} from './client.js'
+import {task} from './task/monitoringTask.js'
 import {SlashCommandBuilder} from '@discordjs/builders'
 import {REST} from '@discordjs/rest'
 import {Routes} from 'discord-api-types/v9'
-import Monitoring from "./model/Monitoring.js";
-import {MessageEmbed} from "discord.js";
+import Monitoring from './model/Monitoring.js'
+import {MessageEmbed} from 'discord.js'
 
 async function start() {
     if (process.argv[2] === '--register') {
-        await registerCommands();
-        process.exit();
+        await registerCommands()
+        process.exit()
     } else if (process.argv[2] === '--clear') {
-        await clearCommands();
-        process.exit();
+        await clearCommands()
+        process.exit()
     }
 
     try {
-        await mongoose.connect(process.env.MONGO_URL);
-        await client.login(process.env.DISCORD_TOKEN);
+        await mongoose.connect(process.env.MONGO_URL)
+        await client.login(process.env.DISCORD_TOKEN)
 
         client.once("ready", async (e) => {
             console.log(`${client.user.tag}`)
-        });
+        })
 
         task.start()
 
         client.on('interactionCreate', async interaction => {
             if (!interaction.isCommand()) return
             if (interaction.user.id !== "154437997989855232") return
-            //console.log('interaction:', interaction)
 
             const {commandName} = interaction
 
             if (commandName === 'madd') {
-                const channel=interaction.options.getChannel('destination')
-                const address=interaction.options.getString('address')
-                const name=interaction.options.getString('name')
-                const password=interaction.options.getString('password') === null ? "null" : interaction.options.getString('password')
+                const channel = interaction.options.getChannel('destination')
+                const address = interaction.options.getString('address')
+                const name = interaction.options.getString('name')
+                const password = interaction.options.getString('password') === null ? "null" : interaction.options.getString('password')
 
-                const guildId=interaction.guildId
+                const guildId = interaction.guildId
                 const channelId = channel.id
                 const message = await channel.send({embeds: [new MessageEmbed().setTitle(name)]})
-                const messageId= message.id
+                const messageId = message.id
 
                 const mon = new Monitoring({
                     guildId,
@@ -59,8 +58,8 @@ async function start() {
         })
 
     } catch (e) {
-        console.log("Main Error", e.message);
-        process.exit(1);
+        console.log("Main Error", e.message)
+        process.exit(1)
     }
 }
 
@@ -86,11 +85,10 @@ async function registerCommands() {
                     .setDescription("password")),
         new SlashCommandBuilder().setName('medit').setDescription('Monitoring edit'),
         new SlashCommandBuilder().setName('mrem').setDescription('Monitoring remove'),
-    ]
-        .map(command => command.toJSON());
+    ].map(command => command.toJSON())
 
     try {
-        const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
+        const rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN)
         await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {body: []})
         await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {body: commands})
         console.log("Successfully registered application commands.")
@@ -101,8 +99,8 @@ async function registerCommands() {
 
 async function clearCommands() {
     try {
-        let rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN);
-        await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {body: []});
+        let rest = new REST({version: '9'}).setToken(process.env.DISCORD_TOKEN)
+        await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {body: []})
         console.log("Successfully cleared application commands.")
     } catch (e) {
         console.error(e)
@@ -113,4 +111,4 @@ process.on('unhandledRejection', (e) => {
     console.error(e)
 });
 
-start().catch((e) => console.error(e));
+start().catch((e) => console.error(e))
