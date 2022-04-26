@@ -1,5 +1,6 @@
 .idea
 mongoscript.js
+mapUrl.json
 
 # Logs
 logs
