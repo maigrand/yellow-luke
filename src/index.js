@@ -57,6 +57,47 @@ async function start() {
             }
         })
 
+        client.on('messageUpdate', async (oldMsg, newMsg) => {
+            try {
+                const guild = client.guilds.cache.get(newMsg.guildId)
+                const channel = await guild.channels.fetch(newMsg.channelId)
+                const logChannel = await guild.channels.fetch(process.env.LOG_TEXT_CHANNEL_ID)
+                const embed = new MessageEmbed()
+
+                embed.setTitle("Edited message")
+                embed.setAuthor({name: newMsg.author.username, iconURL: newMsg.author.avatarURL()})
+                embed.setColor([255, 165, 0])
+                embed.setTimestamp(Date.now())
+                embed.addField("Channel", channel.toString(), false)
+                embed.addField("Old Content", oldMsg.content, false)
+                embed.addField("New Content", newMsg.content, false)
+
+                await logChannel.send({embeds: [embed]})
+            } catch (e) {
+                console.error(e)
+            }
+        })
+
+        client.on('messageDelete', async (msg) => {
+            try {
+                const guild = client.guilds.cache.get(msg.guildId)
+                const channel = await guild.channels.fetch(msg.channelId)
+                const logChannel = await guild.channels.fetch(process.env.LOG_TEXT_CHANNEL_ID)
+                const embed = new MessageEmbed()
+
+                embed.setTitle("Removed message")
+                embed.setAuthor({name: msg.author.username, iconURL: msg.author.avatarURL()})
+                embed.setColor([255, 165, 0])
+                embed.setTimestamp(Date.now())
+                embed.addField("Channel", channel.toString(), false)
+                embed.addField("Content", msg.content, false)
+
+                await logChannel.send({embeds: [embed]})
+            } catch (e) {
+                console.error(e)
+            }
+        })
+
     } catch (e) {
         console.log("Main Error", e.message)
         process.exit(1)
