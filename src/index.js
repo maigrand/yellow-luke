@@ -59,6 +59,10 @@ async function start() {
 
         client.on('messageUpdate', async (oldMsg, newMsg) => {
             try {
+                if (newMsg.author.bot) {
+                    return
+                }
+
                 const guild = client.guilds.cache.get(newMsg.guildId)
                 const channel = await guild.channels.fetch(newMsg.channelId)
                 const logChannel = await guild.channels.fetch(process.env.LOG_TEXT_CHANNEL_ID)
@@ -69,7 +73,7 @@ async function start() {
                 embed.setColor([255, 165, 0])
                 embed.setTimestamp(Date.now())
                 embed.addField("Channel", channel.toString(), false)
-                embed.addField("Old Content", oldMsg.content, false)
+                embed.addField("Old Content", oldMsg.content === ''? "Empty" : oldMsg.content, false)
                 embed.addField("New Content", newMsg.content, false)
 
                 await logChannel.send({embeds: [embed]})
@@ -80,6 +84,10 @@ async function start() {
 
         client.on('messageDelete', async (msg) => {
             try {
+                if (msg.author.bot) {
+                    return
+                }
+
                 const guild = client.guilds.cache.get(msg.guildId)
                 const channel = await guild.channels.fetch(msg.channelId)
                 const logChannel = await guild.channels.fetch(process.env.LOG_TEXT_CHANNEL_ID)
