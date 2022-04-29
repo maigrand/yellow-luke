@@ -57,6 +57,22 @@ async function start() {
             }
         })
 
+        client.on('rateLimit', (data) => {
+            console.log('rateLimitData: ', data)
+        })
+
+        client.on('debug', (info) => {
+            console.log('debugInfo: ', info)
+        })
+
+        client.on('error', (error) => {
+            console.log('errorInfo: ', error)
+        })
+
+        client.on('warn', (warn) => {
+            console.log('warnInfo: ', warn)
+        })
+
         client.on('messageUpdate', async (oldMsg, newMsg) => {
             try {
                 if (newMsg.author.bot) {
