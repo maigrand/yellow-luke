@@ -36,6 +36,7 @@ async function update() {
                 }
 
                 let players = ``
+                let playerIndex = 1
                 for (const client of jkaResponse.clients) {
                     let clientName = client.name
                     if (clientName.includes("*")) {
@@ -53,7 +54,8 @@ async function update() {
                     if (clientName.includes("discord.gg")) {
                         clientName = clientName.replaceAll(/.+/g, "discord.gg")
                     }
-                    players+= `${await normalizeJkaString(clientName)} (score: ${client.score})\n`
+                    players+= `${playerIndex}) ${await normalizeJkaString(clientName)} (score: ${client.score})\n`
+                    playerIndex++
                 }
 
                 await sendMessageViaRest(mon, jkaResponse, players)
@@ -61,6 +63,7 @@ async function update() {
                 console.error(e)
             }
         }
+        update()
     } catch (e) {
         console.error(e)
     }
@@ -88,7 +91,7 @@ async function sendMessageViaRestServerOffline(mon) {
     })
     const payload = await res.json()
     if (res.status === 429) {
-        await delay(payload.retry_after * 1000)
+        await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRestServerOffline(mon)
     }
 }
@@ -118,7 +121,7 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
     })
     const payload = await res.json()
     if (res.status === 429) {
-        await delay(payload.retry_after * 1000)
+        await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
     }
 }
@@ -135,7 +138,7 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
                 fields: [
                     {
                         name: "Map",
-                        value: `${jkaResponse.cvars.mapname}`,
+                        value: `${jkaResponse.cvars.mapname.toLowerCase()}`,
                         inline: true
                     },
                     {
@@ -165,7 +168,7 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
                 timestamp: date.toISOString(),
                 color: `${intColorNormal}`,
                 thumbnail: {
-                    url: `${mapUrl[jkaResponse.cvars.mapname] === undefined ? mapUrl.default : mapUrl[jkaResponse.cvars.mapname]}`
+                    url: `${mapUrl[jkaResponse.cvars.mapname.toLowerCase()] === undefined ? mapUrl.default : mapUrl[jkaResponse.cvars.mapname]}`
                 }
             }
         ]
@@ -181,7 +184,7 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
     })
     const payload = await res.json()
     if (res.status === 429) {
-        await delay(payload.retry_after * 1000)
+        await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRest(mon, jkaResponse, players)
     }
 }
