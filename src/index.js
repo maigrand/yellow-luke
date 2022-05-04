@@ -89,7 +89,7 @@ async function start() {
                 embed.setColor([255, 165, 0])
                 embed.setTimestamp(Date.now())
                 embed.addField("Channel", channel.toString(), false)
-                embed.addField("Old Content", oldMsg.content === '' | oldMsg.content === undefined ? "Empty" : oldMsg.content, false)
+                embed.addField("Old Content", oldMsg.content === '' || oldMsg.content === undefined ? "Empty" : oldMsg.content, false)
                 embed.addField("New Content", newMsg.content, false)
 
                 await logChannel.send({embeds: [embed]})
