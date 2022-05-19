@@ -7,6 +7,8 @@ import {Routes} from 'discord-api-types/v9'
 import Monitoring from './model/Monitoring.js'
 import {MessageEmbed} from 'discord.js'
 
+import 'dotenv/config'
+
 async function start() {
     if (process.argv[2] === '--register') {
         await registerCommands()

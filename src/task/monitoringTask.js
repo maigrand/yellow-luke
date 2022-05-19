@@ -5,6 +5,8 @@ import Monitoring from '../model/Monitoring.js'
 import fs from 'fs'
 import path from 'path'
 
+import 'dotenv/config'
+
 const mapUrl = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './src/mapUrl.json')))
 const intColorNormal = 696330
 const intColorEmpty = 673290
