@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "serve": "npm i && nodemon src/index.js",
     "dev": "node -r dotenv/config src/index.js",
     "commands:dev:register": "node -r dotenv/config src/index.js --register",
     "commands:dev:clear": "node -r dotenv/config src/index.js --clear"
@@ -18,8 +19,11 @@
     "discord-api-types": "^0.31.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
-    "jka-core": "^0.1.9",
+    "jka-core": "^0.1.10",
     "mongoose": "^6.3.0",
     "node-fetch": "^3.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }
