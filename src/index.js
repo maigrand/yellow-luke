@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
-import {client} from './client.js'
-import {task} from './task/monitoringTask.js'
-import {SlashCommandBuilder} from '@discordjs/builders'
-import {REST} from '@discordjs/rest'
-import {Routes} from 'discord-api-types/v9'
+import { MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v9'
+
+import { client } from './client.js'
+import { task } from './task/monitoringTask.js'
 import Monitoring from './model/Monitoring.js'
-import {MessageEmbed} from 'discord.js'
 
 import 'dotenv/config'
 
