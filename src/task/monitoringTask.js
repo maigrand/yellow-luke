@@ -77,6 +77,9 @@ async function sendMessageViaRestServerOffline(mon) {
         embeds: [
             {
                 title: `\uD83D\uDEAB ${mon.name}`,
+                footer: {
+                    text: `/connect ${mon.address}${mon.password === "null" ? `` : `;password ${mon.password}`}`
+                },
                 timestamp: date.toISOString(),
                 color: `${intColorOffline}`
             }
