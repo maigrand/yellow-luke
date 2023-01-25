@@ -1,7 +1,7 @@
 import {getStatusSmart, TGetStatusSmartResponse} from 'jka-core'
 import {DiscordClient} from '../client'
 import MonitoringModel from '../model/MonitoringModel'
-import axios from 'axios'
+import axios, {AxiosError} from 'axios'
 import fs from 'fs'
 import path from 'path'
 
@@ -31,8 +31,8 @@ async function update(discordClient: DiscordClient) {
                 }
 
                 if (jkaResponse.clients.length === 0) {
-                    const guild = discordClient.client.guilds.cache.get(mon.guildId)
-                    const emoji = guild.emojis.cache?.find((emoji) => emoji.name === 'greendot')
+                    //const guild = discordClient.client.guilds.cache.get(mon.guildId)
+                    const emoji = discordClient.client.emojis.cache?.find((emoji) => emoji.name === 'greendot')
                     const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
                     await sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
                     continue
@@ -64,7 +64,11 @@ async function update(discordClient: DiscordClient) {
                 await sendMessageViaRest(mon, jkaResponse, players)
 
             } catch (e) {
-                console.error(e)
+                if (e instanceof AxiosError) {
+                    //
+                } else {
+                    console.error(e)
+                }
             }
         }
         await delay(30000)
