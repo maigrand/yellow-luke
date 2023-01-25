@@ -3,6 +3,7 @@ mongoscript.js
 mapUrl.json
 .history/
 .vscode/
+mongodb_data/
 
 # Logs
 logs

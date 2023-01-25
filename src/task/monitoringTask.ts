@@ -1,27 +1,27 @@
-import {getStatusSmart} from 'jka-core'
-import {client} from '../client.js'
-import fetch from 'node-fetch'
-import Monitoring from '../model/Monitoring.js'
+import {getStatusSmart, TGetStatusSmartResponse} from 'jka-core'
+import {DiscordClient} from '../client'
+import MonitoringModel from '../model/MonitoringModel'
+import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 
-import 'dotenv/config'
-
+// @ts-ignore
 const mapUrl = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './src/mapUrl.json')))
+
 const intColorNormal = 696330
 const intColorEmpty = 673290
 const intColorOffline = 3276800
 
-export const task = () => {
-    update()
+export function task(discordClient: DiscordClient) {
+    update(discordClient)
 }
 
-async function update() {
+async function update(discordClient: DiscordClient) {
     try {
-        const mons = await Monitoring.find({})
+        const mons = await MonitoringModel.find({})
         for (const mon of mons) {
             try {
-                let jkaResponse
+                let jkaResponse: TGetStatusSmartResponse
 
                 try {
                     jkaResponse = await getStatusSmart(mon.address)
@@ -31,8 +31,9 @@ async function update() {
                 }
 
                 if (jkaResponse.clients.length === 0) {
-                    const guild = client.guilds.cache.get(mon.guildId)
-                    const emoteOnline = guild.emojis.cache?.find((emoji) => emoji.name === "greendot") === "undefined" ? "\uD83D\uDFE2" : guild.emojis.cache?.find((emoji) => emoji.name === "greendot")
+                    const guild = discordClient.client.guilds.cache.get(mon.guildId)
+                    const emoji = guild.emojis.cache?.find((emoji) => emoji.name === 'greendot')
+                    const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
                     await sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
                     continue
                 }
@@ -61,19 +62,21 @@ async function update() {
                 }
 
                 await sendMessageViaRest(mon, jkaResponse, players)
+
             } catch (e) {
                 console.error(e)
             }
         }
-        update()
+        await delay(30000)
+        update(discordClient)
     } catch (e) {
         console.error(e)
     }
 }
 
 async function sendMessageViaRestServerOffline(mon) {
-    const date = new Date();
-    const body = {
+    const date = new Date()
+    const data = {
         embeds: [
             {
                 title: `\uD83D\uDEAB ${mon.name}`,
@@ -85,17 +88,18 @@ async function sendMessageViaRestServerOffline(mon) {
             }
         ]
     }
-    const res = await fetch(`https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`, {
+    const res = await axios.request({
+        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
         method: 'PATCH',
         headers: {
             'Accept': 'application/json',
             'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body)
+        data: JSON.stringify(data)
     })
-    const payload = await res.json()
     if (res.status === 429) {
+        // @ts-ignore
         await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRestServerOffline(mon)
     }
@@ -103,7 +107,7 @@ async function sendMessageViaRestServerOffline(mon) {
 
 async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
     const date = new Date();
-    const body = {
+    const data = {
         embeds: [
             {
                 title: `${emoteOnline} **0/${jkaResponse.cvars.sv_maxclients}** | **${jkaResponse.cvars.g_gametype}** | **${await normalizeJkaString(jkaResponse.cvars.sv_hostname)}**`,
@@ -115,17 +119,18 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
             }
         ]
     }
-    const res = await fetch(`https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`, {
+    const res = await axios.request({
+        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
         method: 'PATCH',
         headers: {
             'Accept': 'application/json',
             'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body)
+        data: JSON.stringify(data)
     })
-    const payload = await res.json()
     if (res.status === 429) {
+        // @ts-ignore
         await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
     }
@@ -133,7 +138,7 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
 
 async function sendMessageViaRest(mon, jkaResponse, players) {
     const date = new Date();
-    const body = {
+    const data = {
         embeds: [
             {
                 author: {
@@ -178,17 +183,18 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
             }
         ]
     }
-    const res = await fetch(`https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`, {
+    const res = await axios.request({
+        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
         method: 'PATCH',
         headers: {
             'Accept': 'application/json',
             'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body)
+        data: JSON.stringify(data)
     })
-    const payload = await res.json()
     if (res.status === 429) {
+        // @ts-ignore
         await delay(payload.retry_after * 1000 + 500)
         return sendMessageViaRest(mon, jkaResponse, players)
     }

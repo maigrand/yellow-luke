@@ -3,27 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "serve": "npm i && nodemon src/index.js",
-    "dev": "node -r dotenv/config src/index.js",
-    "commands:dev:register": "node -r dotenv/config src/index.js --register",
-    "commands:dev:clear": "node -r dotenv/config src/index.js --clear"
+    "dev": "ts-node-dev ./src/index.ts",
+    "register-commands": "ts-node-dev ./src/register-slash-commands.ts --register"
   },
   "author": "Mai Grand <mkmaxz48@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "discord-api-types": "^0.31.2",
-    "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
+    "axios": "^1.2.3",
+    "discord.js": "^14.7.1",
     "jka-core": "^0.1.10",
-    "mongoose": "^6.3.0",
-    "node-fetch": "^3.2.4"
+    "mongoose": "^6.8.4",
+    "node-fetch": "^3.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "dotenv": "^16.0.3",
+    "ts-node-dev": "^2.0.0"
   }
 }
