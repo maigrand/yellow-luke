@@ -56,7 +56,7 @@ export async function deleteServer(discordClient: DiscordClient, interaction: Ch
 
     const name = interaction.options.getString('name')
     const mon = await MonitoringModel.findOne({guildId: interaction.guildId, name: name})
-    const channel = interaction.channel as TextChannel
+    const channel = await interaction.guild.channels.fetch(mon.channelId) as TextChannel
 
     const message = await channel.messages.fetch(mon.messageId)
     await message.delete()
