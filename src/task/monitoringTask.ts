@@ -2,11 +2,7 @@ import {getStatusSmart, TGetStatusSmartResponse} from 'jka-core'
 import {DiscordClient} from '../client'
 import MonitoringModel from '../model/MonitoringModel'
 import axios, {AxiosError} from 'axios'
-import fs from 'fs'
-import path from 'path'
-
-// @ts-ignore
-const mapUrl = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './src/mapUrl.json')))
+import * as mapUrl from '../mapUrl.json'
 
 const intColorNormal = 696330
 const intColorEmpty = 673290

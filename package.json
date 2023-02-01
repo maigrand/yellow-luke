@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "dev": "ts-node-dev ./src/index.ts",
     "register-commands": "ts-node-dev ./src/register-slash-commands.ts --register"
   },

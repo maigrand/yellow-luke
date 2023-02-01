@@ -42,7 +42,7 @@ const start = async () => {
         })
 
     } catch (e) {
-        console.error(e)
+        throw e
     }
 }
 
@@ -52,3 +52,7 @@ process.on('unhandledRejection', (e) => {
 })
 
 start()
+    .catch((e) => {
+        console.error(e)
+        process.exit(1)
+    })

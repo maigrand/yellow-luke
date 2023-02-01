@@ -19,7 +19,9 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src/**/*.ts"
+    "./.env",
+    "src/**/*.ts",
+    "src/mapUrl.json"
   ],
   "exclude": [
     "node_modules"

@@ -4,6 +4,7 @@ mapUrl.json
 .history/
 .vscode/
 mongodb_data/
+build/
 
 # Logs
 logs
