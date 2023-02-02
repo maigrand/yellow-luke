@@ -60,11 +60,7 @@ async function update(discordClient: DiscordClient) {
                 await sendMessageViaRest(mon, jkaResponse, players)
 
             } catch (e) {
-                if (e instanceof AxiosError) {
-                    //
-                } else {
-                    console.error(e)
-                }
+                console.error(e)
             }
         }
         await delay(30000)
@@ -88,20 +84,29 @@ async function sendMessageViaRestServerOffline(mon) {
             }
         ]
     }
-    const res = await axios.request({
-        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
-            'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(data)
-    })
-    if (res.status === 429) {
-        // @ts-ignore
-        await delay(res.data.retry_after * 1000 + 500)
-        return sendMessageViaRestServerOffline(mon)
+
+    try {
+        await axios.request({
+            url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(data)
+        })
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            if (e.response.status === 409) {
+                await delay (e.response.data.retry_after * 1000 + 500)
+                return sendMessageViaRestServerOffline(mon)
+            } else {
+                throw e
+            }
+        } else {
+            throw e
+        }
     }
 }
 
@@ -119,20 +124,29 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
             }
         ]
     }
-    const res = await axios.request({
-        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
-            'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(data)
-    })
-    if (res.status === 429) {
-        // @ts-ignore
-        await delay(res.data.retry_after * 1000 + 500)
-        return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
+
+    try {
+        await axios.request({
+            url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(data)
+        })
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            if (e.response.status === 409) {
+                await delay (e.response.data.retry_after * 1000 + 500)
+                return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
+            } else {
+                throw e
+            }
+        } else {
+            throw e
+        }
     }
 }
 
@@ -183,20 +197,29 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
             }
         ]
     }
-    const res = await axios.request({
-        url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
-            'Content-Type': 'application/json'
-        },
-        data: JSON.stringify(data)
-    })
-    if (res.status === 429) {
-        // @ts-ignore
-        await delay(res.data.retry_after * 1000 + 500)
-        return sendMessageViaRest(mon, jkaResponse, players)
+
+    try {
+        await axios.request({
+            url: `https://discord.com/api/v10/channels/${mon.channelId}/messages/${mon.messageId}`,
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bot ${process.env.DISCORD_TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(data)
+        })
+    } catch (e) {
+        if (e instanceof AxiosError) {
+            if (e.response.status === 409) {
+                await delay (e.response.data.retry_after * 1000 + 500)
+                return sendMessageViaRest(mon, jkaResponse, players)
+            } else {
+                throw e
+            }
+        } else {
+            throw e
+        }
     }
 }
 
