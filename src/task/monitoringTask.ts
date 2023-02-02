@@ -2,7 +2,7 @@ import {getStatusSmart, TGetStatusSmartResponse} from 'jka-core'
 import {DiscordClient} from '../client'
 import MonitoringModel from '../model/MonitoringModel'
 import axios, {AxiosError} from 'axios'
-import * as mapUrl from '../mapUrl.json'
+import mapUrl from '../mapUrl.json'
 
 const intColorNormal = 696330
 const intColorEmpty = 673290
