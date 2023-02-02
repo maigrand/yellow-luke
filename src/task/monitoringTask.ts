@@ -100,7 +100,7 @@ async function sendMessageViaRestServerOffline(mon) {
     })
     if (res.status === 429) {
         // @ts-ignore
-        await delay(payload.retry_after * 1000 + 500)
+        await delay(res.data.retry_after * 1000 + 500)
         return sendMessageViaRestServerOffline(mon)
     }
 }
@@ -131,7 +131,7 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
     })
     if (res.status === 429) {
         // @ts-ignore
-        await delay(payload.retry_after * 1000 + 500)
+        await delay(res.data.retry_after * 1000 + 500)
         return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
     }
 }
@@ -195,7 +195,7 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
     })
     if (res.status === 429) {
         // @ts-ignore
-        await delay(payload.retry_after * 1000 + 500)
+        await delay(res.data.retry_after * 1000 + 500)
         return sendMessageViaRest(mon, jkaResponse, players)
     }
 }
