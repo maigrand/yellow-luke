@@ -98,7 +98,7 @@ async function sendMessageViaRestServerOffline(mon) {
         })
     } catch (e) {
         if (e instanceof AxiosError) {
-            if (e.response.status === 409) {
+            if (e.response.status === 429) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRestServerOffline(mon)
             } else {
@@ -138,7 +138,7 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
         })
     } catch (e) {
         if (e instanceof AxiosError) {
-            if (e.response.status === 409) {
+            if (e.response.status === 429) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
             } else {
@@ -211,7 +211,7 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
         })
     } catch (e) {
         if (e instanceof AxiosError) {
-            if (e.response.status === 409) {
+            if (e.response.status === 429) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRest(mon, jkaResponse, players)
             } else {
