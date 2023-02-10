@@ -17,5 +17,10 @@
         - mongodb
       restart: unless-stopped
       build: ./yellowluke
+    redluke:
+        depends_on:
+            - mongodb
+        restart: unless-stopped
+        build: ./redluke
   volumes:
     mongodbData:

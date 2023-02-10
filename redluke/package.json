@@ -1,0 +1,25 @@
+{
+  "name": "redluke",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node-dev ./src/index.ts",
+    "register-commands": "ts-node-dev ./src/register-slash-commands.ts --register"
+  },
+  "author": "Mai Grand <mkmaxz48@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.3",
+    "discord.js": "^14.7.1",
+    "jka-core": "^0.1.10",
+    "mongoose": "^6.8.4",
+    "node-fetch": "^3.3.0",
+    "node-html-to-image": "^3.3.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "ts-node-dev": "^2.0.0"
+  }
+}
