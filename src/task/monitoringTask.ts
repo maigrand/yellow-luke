@@ -34,26 +34,12 @@ async function update(discordClient: DiscordClient) {
                     continue
                 }
 
-                let players = ``
+                let players = 'N) Sc | Ping | Name\n'
                 let playerIndex = 1
                 for (const client of jkaResponse.clients) {
-                    let clientName = client.name
-                    if (clientName.includes("*")) {
-                        clientName = clientName.replaceAll("*", "\\*")
-                    }
-                    if (clientName.includes("_")) {
-                        clientName = clientName.replaceAll("_", "\\_")
-                    }
-                    if (clientName.includes("\"")) {
-                        clientName = clientName.replaceAll("\"", "")
-                    }
-                    if (clientName.includes("|")) {
-                        clientName = clientName.replaceAll("|", "\\|")
-                    }
-                    if (clientName.includes("discord.gg")) {
-                        clientName = clientName.replaceAll(/.+/g, "discord.gg")
-                    }
-                    players+= `${playerIndex}) ${await normalizeJkaString(clientName)} (score: ${client.score})\n`
+                    let clientName = await validateNickname(client.name)
+                    //Discord hack with '⠀' (unicode space char) https://www.compart.com/en/unicode/U+2800
+                    players += `${playerIndex})⠀${client.score} | ${client.ping} | ${await normalizeJkaString(clientName)}\n`
                     playerIndex++
                 }
 
@@ -225,6 +211,26 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
 
 async function delay(ms) {
     return await new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function validateNickname(nickname) {
+    let clientName = nickname
+    if (clientName.includes("*")) {
+        clientName = clientName.replaceAll("*", "\\*")
+    }
+    if (clientName.includes("_")) {
+        clientName = clientName.replaceAll("_", "\\_")
+    }
+    if (clientName.includes("\"")) {
+        clientName = clientName.replaceAll("\"", "")
+    }
+    if (clientName.includes("|")) {
+        clientName = clientName.replaceAll("|", "\\|")
+    }
+    if (clientName.includes("discord.gg")) {
+        clientName = clientName.replaceAll(/.+/g, "discord.gg")
+    }
+    return clientName
 }
 
 async function normalizeJkaString(string) {
