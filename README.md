@@ -1,6 +1,6 @@
 # Yellow-Luke
 This is a Discord bot written in TypeScript that provides monitoring functionality for the game "Jedi Knight: Jedi Academy."
-The bot is designed to monitor a list of Jedi Academy servers and send notifications to Discord whenever any of the servers change their status.
+The bot is designed to monitor a list of Jedi Academy servers and send notifications to Discord with a certain frequency.
 The bot supports commands to add, edit, list, delete, and rebuild servers that the bot monitors.
 
 # Installation
