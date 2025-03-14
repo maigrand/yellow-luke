@@ -88,7 +88,8 @@ async function sendMessageViaRestServerOffline(mon) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRestServerOffline(mon)
             } else {
-                throw e
+                await delay (60000)
+                return sendMessageViaRestServerOffline(mon)
             }
         } else {
             throw e
@@ -128,7 +129,8 @@ async function sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
             } else {
-                throw e
+                await delay (60000)
+                return sendMessageViaRestServerEmpty(mon, jkaResponse, emoteOnline)
             }
         } else {
             throw e
@@ -201,7 +203,8 @@ async function sendMessageViaRest(mon, jkaResponse, players) {
                 await delay (e.response.data.retry_after * 1000 + 500)
                 return sendMessageViaRest(mon, jkaResponse, players)
             } else {
-                throw e
+                await delay (60000)
+                return sendMessageViaRest(mon, jkaResponse, players)
             }
         } else {
             throw e
