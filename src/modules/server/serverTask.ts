@@ -9,7 +9,11 @@ let currentServerId: number | null = null;
 let isTaskActive = false;
 
 export const serverTask = async (client: Client) => {
-	const emoji = client.emojis.cache?.find((emoji) => emoji.name === 'greendot')
+	// hardcode emoji
+	const oauthGuild = await client.guilds.fetch('218734959353921537')
+	const guild = await oauthGuild.fetch();
+	const emojis = await guild.emojis.fetch();
+	const emoji = emojis.find((emoji) => emoji.name === 'greendot')
 	const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
 
 	await update(emoteOnline);
