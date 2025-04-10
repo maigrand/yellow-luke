@@ -9,16 +9,21 @@ let currentServerId: number | null = null;
 let isTaskActive = false;
 
 export const serverTask = async (client: Client) => {
-	await update(client);
+	const emoji = client.emojis.cache?.find((emoji) => emoji.name === 'greendot')
+	const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
+
+	await update(emoteOnline);
 	setInterval(async () => {
 		if (isTaskActive) {
 			return;
 		}
-		await update(client);
+		await update(emoteOnline);
 	}, 60000)
 }
 
-const update = async (client: Client) => {
+const update = async (
+	emoteOnline: GuildEmoji | string,
+) => {
 	if (new Date().getTime() < nextUpdatedAt.getTime()) {
 		return;
 	}
@@ -35,9 +40,6 @@ const update = async (client: Client) => {
 			try {
 				jkaResponse = await getStatusSmart(server.address)
 			} catch (e) {}
-
-			const emoji = client.emojis.cache?.find((emoji) => emoji.name === 'greendot')
-			const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
 
 			if (new Date().getTime() < nextUpdatedAt.getTime()) {
 				return;
