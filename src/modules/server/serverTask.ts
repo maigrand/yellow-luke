@@ -4,11 +4,12 @@ import {getStatusSmart, TGetStatusSmartResponse} from "jka-core";
 import {getEmptyServerEmbed, getOfflineServerEmbed, getServerEmbed} from "./serverEmbed";
 import axios, {AxiosError} from "axios";
 
-let nextUpdatedAt = new Date(Date.now() + 3000);
+let nextUpdatedAt = new Date(Date.now() - 1);
 let currentServerId: number | null = null;
 let isTaskActive = false;
 
 export const serverTask = async (client: Client) => {
+	await update(client);
 	setInterval(async () => {
 		if (isTaskActive) {
 			return;
