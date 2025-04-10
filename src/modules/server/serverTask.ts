@@ -4,6 +4,8 @@ import {getStatusSmart, TGetStatusSmartResponse} from "jka-core";
 import {getEmptyServerEmbed, getOfflineServerEmbed, getServerEmbed} from "./serverEmbed";
 import axios, {AxiosError} from "axios";
 
+const TASK_INTERVAL_TIMEOUT_MS = 1000
+
 let nextUpdatedAt = new Date(Date.now() - 1);
 let currentServerId: number | null = null;
 let isTaskActive = false;
@@ -22,7 +24,7 @@ export const serverTask = async (client: Client) => {
 			return;
 		}
 		await update(emoteOnline);
-	}, 60000)
+	}, TASK_INTERVAL_TIMEOUT_MS)
 }
 
 const update = async (
@@ -55,6 +57,7 @@ const update = async (
 			}
 		}
 		isTaskActive = false;
+		nextUpdatedAt = new Date(Date.now() + 30000);
 	} catch (e) {
 		console.error(e);
 		throw e;
