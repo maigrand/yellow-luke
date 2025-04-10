@@ -51,6 +51,7 @@ const update = async (
 			const isAllowRequest = await discordRequest(server, emoteOnline, jkaResponse);
 			if (!isAllowRequest) {
 				currentServerId = server.id;
+				break;
 			}
 		}
 		isTaskActive = false;
