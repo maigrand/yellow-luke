@@ -14,7 +14,7 @@ export const serverTask = async (client: Client) => {
 			return;
 		}
 		await update(client);
-	}, 3000)
+	}, 60000)
 }
 
 const update = async (client: Client) => {
