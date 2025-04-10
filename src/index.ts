@@ -25,18 +25,12 @@ const start = async () => {
 			console.log(`${d.toUTCString()} ready ${client.user.tag}`)
 		})
 
-		//recursive function for update "monitoring messages"
 		await serverTask(client);
-
 		await commandModule(client);
 	} catch (e) {
 		throw e;
 	}
 }
-
-process.on('unhandledRejection', (e) => {
-	console.error(e)
-})
 
 start()
 	.catch((e) => console.error(e))
