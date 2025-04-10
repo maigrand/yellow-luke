@@ -60,11 +60,11 @@ const update = async (
 	}
 }
 
-const discordRequest = async (
+async function discordRequest(
 	server: ServerModel,
 	emoteOnline: string | GuildEmoji,
 	jkaResponse?: TGetStatusSmartResponse,
-) => {
+) {
 	let data: ReturnType<typeof getServerEmbed | typeof getEmptyServerEmbed | typeof getOfflineServerEmbed>;
 	if (!jkaResponse) {
 		data = getOfflineServerEmbed(server);
