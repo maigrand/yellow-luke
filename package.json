@@ -12,14 +12,14 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^1.8.4",
-    "discord.js": "^14.18.0",
+    "axios": "^1.10.0",
+    "discord.js": "^14.21.0",
     "jka-core": "^0.6.5",
-    "tsx": "^4.19.3"
+    "tsx": "^4.20.3"
   },
   "devDependencies": {
-    "@types/node": "^22.13.17",
-    "dotenv": "^16.4.7",
-    "typescript": "^5.8.2"
+    "@types/node": "^24.0.7",
+    "dotenv": "^17.0.0",
+    "typescript": "^5.8.3"
   }
 }

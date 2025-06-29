@@ -1,5 +1,5 @@
 export const normalizeJkaString = (jkaString: string) => {
-	return jkaString.replaceAll(/\^\d/g, "")
+	return jkaString?.replaceAll(/\^\d/g, "") || '';
 }
 
 export const validateNickname = (nickname: string) => {
