@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: yellow-luke-2
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./servers.json:/app/servers.json
+      - ./mapUrl.json:/app/mapUrl.json:ro

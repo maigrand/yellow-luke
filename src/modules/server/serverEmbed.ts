@@ -4,6 +4,7 @@ import {normalizeJkaString, validateNickname} from "./serverUtil";
 import mapUrl from '@@/mapUrl.json'
 import {GuildEmoji} from "discord.js";
 
+const mapUrls: Record<string, string> = mapUrl;
 const intColorNormal = 696330
 const intColorOffline = 3276800
 const intColorEmpty = 673290
@@ -20,7 +21,7 @@ export const getOfflineServerEmbed = (
 					text: `/connect ${server.address}${server.password === "null" ? `` : `;password ${server.password}`}`
 				},
 				timestamp: date.toISOString(),
-				color: `${intColorOffline}`
+				color: intColorOffline
 			}
 		]
 	}
@@ -40,7 +41,7 @@ export const getEmptyServerEmbed = (
 					text: `/connect ${server.address}${server.password === "null" ? `` : `;password ${server.password}`}`
 				},
 				timestamp: date.toISOString(),
-				color: `${intColorEmpty}`
+				color: intColorEmpty
 			}
 		]
 	}
@@ -99,9 +100,9 @@ export const getServerEmbed = (
 					text: `/connect ${server.address}${server.password === "null" ? `` : `;password ${server.password}`}`
 				},
 				timestamp: date.toISOString(),
-				color: `${intColorNormal}`,
+				color: intColorNormal,
 				thumbnail: {
-					url: `${mapUrl[jkaResponse.cvars.mapname.toLowerCase()] === undefined ? mapUrl.default : mapUrl[jkaResponse.cvars.mapname]}`
+					url: mapUrls[jkaResponse.cvars.mapname.toLowerCase()] ?? mapUrls.default
 				}
 			}
 		]

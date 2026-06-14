@@ -1,14 +1,13 @@
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
-	MessageFlagsBitField,
-	TextChannel
+	MessageFlags,
 } from "discord.js";
 import {getServers, setServers} from "@/modules/server/serverModel";
 
 export const rebuildServers = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.deferReply({
-		flags: [MessageFlagsBitField.Flags.Ephemeral]
+		flags: MessageFlags.Ephemeral
 	})
 
 	const servers = await getServers();
@@ -20,7 +19,11 @@ export const rebuildServers = async (interaction: ChatInputCommandInteraction) =
 			continue;
 		}
 
-		const channel = await interaction.guild.channels.fetch(server.channelId) as TextChannel
+		const channel = await interaction.guild!.channels.fetch(server.channelId)
+		if (!channel?.isSendable()) {
+			console.warn(`Cannot rebuild server ${server.id}: channel ${server.channelId} is not sendable`)
+			continue
+		}
 
 		try {
 			const oldMessage = await channel.messages.fetch(server.messageId)

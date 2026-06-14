@@ -1,8 +1,12 @@
 import 'dotenv/config'
-import {REST, Routes, SlashCommandBuilder, PermissionsBitField} from 'discord.js'
+import {ChannelType, PermissionsBitField, REST, Routes, SlashCommandBuilder} from 'discord.js'
 
 const TOKEN = process.env.DISCORD_TOKEN
 const CLIENT_ID = process.env.CLIENT_ID
+
+if (!TOKEN || !CLIENT_ID) {
+	throw new Error('DISCORD_TOKEN and CLIENT_ID must be set')
+}
 
 const commands = [
 	new SlashCommandBuilder()
@@ -12,6 +16,7 @@ const commands = [
 			option
 				.setName('destination')
 				.setDescription('Channel')
+				.addChannelTypes(ChannelType.GuildText)
 				.setRequired(true))
 		.addStringOption(option =>
 			option
@@ -79,5 +84,6 @@ export const registerSlashCommands = async() => {
 		console.log('Successfully reloaded application [/] commands.')
 	} catch (error) {
 		console.error(error)
+		throw error
 	}
 }

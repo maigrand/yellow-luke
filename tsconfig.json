@@ -4,29 +4,30 @@
       "es2020",
       "ES2021.String"
     ],
-    "module": "commonjs",
+    "module": "Node16",
     "target": "es2020",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "incremental": true,
-    "noImplicitAny": false,
-    "moduleResolution": "node",
+    "strict": true,
+    "moduleResolution": "Node16",
     "sourceMap": true,
     "outDir": "build",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["src/*"],
-      "@@/*": ["./*"],
+      "@@/*": ["./*"]
     }
   },
   "include": [
     "./.env",
     "src/**/*.ts",
     "src/mapUrl.json",
-    "src/servers.json",
+    "src/servers.json"
   ],
   "exclude": [
     "node_modules"

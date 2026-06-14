@@ -1,30 +1,35 @@
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
-	MessageFlagsBitField,
-	TextChannel
+	MessageFlags,
 } from "discord.js";
 import {getServers, ServerModel, setServers} from "@/modules/server/serverModel";
 
 export const addServer = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.deferReply({
-		flags: [MessageFlagsBitField.Flags.Ephemeral]
+		flags: MessageFlags.Ephemeral
 	})
 
-	const channel = interaction.options.getChannel('destination') as TextChannel
-	const address = interaction.options.getString('address')
-	const name = interaction.options.getString('name')
-	const password = interaction.options.getString('password') === null ? 'null' : interaction.options.getString('password')
+	const selectedChannel = interaction.options.getChannel('destination', true)
+	const channel = await interaction.guild!.channels.fetch(selectedChannel.id)
+	if (!channel?.isSendable()) {
+		await interaction.editReply('Выбранный канал не поддерживает отправку сообщений.')
+		return
+	}
+	const address = interaction.options.getString('address', true)
+	const name = interaction.options.getString('name', true)
+	const password = interaction.options.getString('password') ?? 'null'
 
-	const guildId = interaction.guildId
+	const guildId = interaction.guildId!
 	const channelId = channel.id
 	const message = await channel.send({embeds: [new EmbedBuilder().setTitle(name)]})
 	const messageId = message.id
 
 	const servers = await getServers();
+	const nextId = servers.reduce((maxId, server) => Math.max(maxId, server.id), -1) + 1;
 
 	const server: ServerModel = {
-		id: servers.length,
+		id: nextId,
 		guildId,
 		channelId,
 		messageId,

@@ -11,19 +11,28 @@ let currentServerId: number | null = null;
 let isTaskActive = false;
 
 export const serverTask = async (client: Client) => {
-	// hardcode emoji
-	const oauthGuild = await client.guilds.fetch('218734959353921537')
-	const guild = await oauthGuild.fetch();
-	const emojis = await guild.emojis.fetch();
-	const emoji = emojis.find((emoji) => emoji.name === 'greendot')
-	const emoteOnline = emoji === undefined ? "\uD83D\uDFE2" : emoji
+	let emoteOnline: GuildEmoji | string = "\uD83D\uDFE2"
+	const emojiGuildId = process.env.EMOJI_GUILD_ID
+	if (emojiGuildId) {
+		try {
+			const guild = await client.guilds.fetch(emojiGuildId)
+			const emojis = await guild.emojis.fetch()
+			emoteOnline = emojis.find((emoji) => emoji.name === 'greendot') ?? emoteOnline
+		} catch (error) {
+			console.warn(`Could not load greendot emoji from guild ${emojiGuildId}`, error)
+		}
+	}
 
 	await update(emoteOnline);
 	setInterval(async () => {
 		if (isTaskActive) {
 			return;
 		}
-		await update(emoteOnline);
+		try {
+			await update(emoteOnline);
+		} catch (error) {
+			console.error('Server update task failed', error)
+		}
 	}, TASK_INTERVAL_TIMEOUT_MS)
 }
 
@@ -33,9 +42,12 @@ const update = async (
 	if (new Date().getTime() < nextUpdatedAt.getTime()) {
 		return;
 	}
+	isTaskActive = true;
 	try {
-		isTaskActive = true;
 		const servers = await getServers();
+		if (currentServerId !== null && !servers.some((server) => server.id === currentServerId)) {
+			currentServerId = null;
+		}
 		for (const server of servers) {
 			if (currentServerId !== null && currentServerId !== server.id) {
 				continue;
@@ -56,11 +68,12 @@ const update = async (
 				break;
 			}
 		}
-		isTaskActive = false;
 		nextUpdatedAt = new Date(Date.now() + 30000);
 	} catch (e) {
 		console.error(e);
-		throw e;
+		nextUpdatedAt = new Date(Date.now() + 30000);
+	} finally {
+		isTaskActive = false;
 	}
 }
 

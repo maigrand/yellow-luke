@@ -1,32 +1,25 @@
 import 'dotenv/config'
-import {Client, Events, IntentsBitField, Partials} from "discord.js";
+import {Client, Events, GatewayIntentBits} from "discord.js";
 import {serverTask} from "@/modules/server/serverTask";
 import {commandModule} from "@/modules/command";
 
 const start = async () => {
 	try {
 		const client = new Client({
-			partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 			intents: [
-				IntentsBitField.Flags.Guilds,
-				IntentsBitField.Flags.GuildMessages,
-				// IntentsBitField.Flags.GuildMessageReactions,
-				// IntentsBitField.Flags.GuildMembers,
-				// IntentsBitField.Flags.GuildPresences,
-				IntentsBitField.Flags.GuildVoiceStates,
-				IntentsBitField.Flags.MessageContent,
+				GatewayIntentBits.Guilds,
+				GatewayIntentBits.GuildEmojisAndStickers,
 			],
 		})
 
-		await client.login(process.env.DISCORD_TOKEN)
-
-		client.on(Events.ClientReady, async () => {
+		client.once(Events.ClientReady, (readyClient) => {
 			const d = new Date()
-			console.log(`${d.toUTCString()} ready ${client.user.tag}`)
+			console.log(`${d.toUTCString()} ready ${readyClient.user.tag}`)
 		})
 
-		await serverTask(client);
 		await commandModule(client);
+		await client.login(process.env.DISCORD_TOKEN)
+		await serverTask(client);
 	} catch (e) {
 		throw e;
 	}

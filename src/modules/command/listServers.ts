@@ -1,14 +1,13 @@
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
-	MessageFlagsBitField,
-	TextChannel
+	MessageFlags,
 } from "discord.js";
 import {getServers} from "@/modules/server/serverModel";
 
 export const listServers = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.deferReply({
-		flags: [MessageFlagsBitField.Flags.Ephemeral]
+		flags: MessageFlags.Ephemeral
 	})
 
 	const servers = await getServers();
@@ -16,9 +15,9 @@ export const listServers = async (interaction: ChatInputCommandInteraction) => {
 	const emb = new EmbedBuilder();
 
 	for (const server of servers) {
-		const textChannel = interaction.guild.channels.cache.get(server.channelId) as TextChannel
+		const textChannel = interaction.guild!.channels.cache.get(server.channelId)
 		const pass = server.password === 'null' ? '' : `:${server.password}`
-		const out = `${textChannel.toString()} ${server.index}) ${server.name} ${server.address}${pass} (${server.id})\n`
+		const out = `${textChannel?.toString() ?? `#${server.channelId}`} ${server.index}) ${server.name} ${server.address}${pass} (${server.id})\n`
 		output += out
 	}
 
