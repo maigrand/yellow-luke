@@ -16,11 +16,16 @@ export const serverTask = async (client: Client) => {
 	if (emojiGuildId) {
 		try {
 			const guild = await client.guilds.fetch(emojiGuildId)
-			const emojis = await guild.emojis.fetch()
-			emoteOnline = emojis.find((emoji) => emoji.name === 'greendot') ?? emoteOnline
+			const emojis = await guild.emojis?.fetch()
+			emoteOnline = emojis?.find((emoji) => emoji.name === 'greendot') ?? emoteOnline
 		} catch (error) {
 			console.warn(`Could not load greendot emoji from guild ${emojiGuildId}`, error)
 		}
+	}
+
+	const emojiApplication = client.emojis?.cache?.find((emoji) => emoji.name === 'greendot')
+	if (emojiApplication) {
+		emoteOnline = emojiApplication
 	}
 
 	await update(emoteOnline);
