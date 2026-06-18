@@ -71,6 +71,28 @@ const commands = [
 		.setName('mrebuild')
 		.setDescription('rebuild lists')
 		.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
+	new SlashCommandBuilder()
+		.setName('mtextchannelplayers')
+		.setDescription('show active players count in a text channel name')
+		.addStringOption(option =>
+			option
+				.setName('state')
+				.setDescription('enable or disable updates')
+				.setRequired(true)
+				.addChoices(
+					{name: 'on', value: 'on'},
+					{name: 'off', value: 'off'},
+				))
+		.addChannelOption(option =>
+			option
+				.setName('channel')
+				.setDescription('text channel to rename')
+				.addChannelTypes(ChannelType.GuildText))
+		.addStringOption(option =>
+			option
+				.setName('template')
+				.setDescription('channel name template, for example: Ща играют: %players%'))
+		.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
 ]
 
 const rest = new REST({version: '10'}).setToken(TOKEN)

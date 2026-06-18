@@ -6,4 +6,5 @@ services:
     env_file: .env
     volumes:
       - ./servers.json:/app/servers.json
+      - ./textChannelPlayers.json:/app/textChannelPlayers.json
       - ./mapUrl.json:/app/mapUrl.json:ro

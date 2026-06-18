@@ -1,8 +1,12 @@
-import {Client, GuildEmoji} from "discord.js";
+import {Client, GuildEmoji, TextChannel} from "discord.js";
 import {getServers, ServerModel} from "./serverModel";
 import {getStatusSmart, TGetStatusSmartResponse} from "jka-core";
 import {getEmptyServerEmbed, getOfflineServerEmbed, getServerEmbed} from "./serverEmbed";
 import axios, {AxiosError} from "axios";
+import {
+	getTextChannelPlayersConfigs,
+	setTextChannelPlayersLastName
+} from "@/modules/textChannelPlayers/textChannelPlayersModel";
 
 const TASK_INTERVAL_TIMEOUT_MS = 1000
 
@@ -28,13 +32,13 @@ export const serverTask = async (client: Client) => {
 		emoteOnline = emojiApplication
 	}
 
-	await update(emoteOnline);
+	await update(client, emoteOnline);
 	setInterval(async () => {
 		if (isTaskActive) {
 			return;
 		}
 		try {
-			await update(emoteOnline);
+			await update(client, emoteOnline);
 		} catch (error) {
 			console.error('Server update task failed', error)
 		}
@@ -42,6 +46,7 @@ export const serverTask = async (client: Client) => {
 }
 
 const update = async (
+	client: Client,
 	emoteOnline: GuildEmoji | string,
 ) => {
 	if (new Date().getTime() < nextUpdatedAt.getTime()) {
@@ -53,6 +58,7 @@ const update = async (
 		if (currentServerId !== null && !servers.some((server) => server.id === currentServerId)) {
 			currentServerId = null;
 		}
+		const playersByGuildId = new Map<string, number>();
 		for (const server of servers) {
 			if (currentServerId !== null && currentServerId !== server.id) {
 				continue;
@@ -64,6 +70,13 @@ const update = async (
 				jkaResponse = await getStatusSmart(server.address)
 			} catch (e) {}
 
+			if (jkaResponse) {
+				playersByGuildId.set(
+					server.guildId,
+					(playersByGuildId.get(server.guildId) ?? 0) + jkaResponse.clients.length,
+				)
+			}
+
 			if (new Date().getTime() < nextUpdatedAt.getTime()) {
 				return;
 			}
@@ -73,12 +86,47 @@ const update = async (
 				break;
 			}
 		}
+		await updateTextChannelPlayers(client, playersByGuildId)
 		nextUpdatedAt = new Date(Date.now() + 30000);
 	} catch (e) {
 		console.error(e);
 		nextUpdatedAt = new Date(Date.now() + 30000);
 	} finally {
 		isTaskActive = false;
+	}
+}
+
+const updateTextChannelPlayers = async (
+	client: Client,
+	playersByGuildId: Map<string, number>,
+) => {
+	const configs = await getTextChannelPlayersConfigs()
+	for (const config of configs) {
+		if (!config.enabled || !config.channelId) {
+			continue
+		}
+
+		const players = playersByGuildId.get(config.guildId) ?? 0
+		const nextName = config.template.replaceAll('%players%', players.toString()).slice(0, 100)
+		if (nextName === '' || nextName === config.lastName) {
+			continue
+		}
+
+		try {
+			const channel = await client.channels.fetch(config.channelId)
+			if (!(channel instanceof TextChannel) || channel.guildId !== config.guildId) {
+				console.warn(`Text channel players config for guild ${config.guildId} points to an invalid channel ${config.channelId}`)
+				continue
+			}
+			if (channel.name === nextName) {
+				await setTextChannelPlayersLastName(config.guildId, nextName)
+				continue
+			}
+			await channel.setName(nextName, 'Update active players count')
+			await setTextChannelPlayersLastName(config.guildId, nextName)
+		} catch (error) {
+			console.error(`Could not update text channel players name for guild ${config.guildId}`, error)
+		}
 	}
 }
 
