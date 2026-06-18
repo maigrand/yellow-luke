@@ -91,7 +91,7 @@ const commands = [
 		.addStringOption(option =>
 			option
 				.setName('template')
-				.setDescription('channel name template, for example: Ща играют: %players%'))
+				.setDescription('template. %players% = count. %p:one:few:many% = RU plural, e.g. джеда%p:й:я:ев%'))
 		.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
 ]
 

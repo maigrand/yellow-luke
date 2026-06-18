@@ -7,6 +7,7 @@ import {
 	getTextChannelPlayersConfigs,
 	setTextChannelPlayersLastName
 } from "@/modules/textChannelPlayers/textChannelPlayersModel";
+import {renderTemplate} from "@/modules/textChannelPlayers/pluralize";
 
 const TASK_INTERVAL_TIMEOUT_MS = 1000
 
@@ -107,7 +108,7 @@ const updateTextChannelPlayers = async (
 		}
 
 		const players = playersByGuildId.get(config.guildId) ?? 0
-		const nextName = config.template.replaceAll('%players%', players.toString()).slice(0, 100)
+		const nextName = renderTemplate(config.template, players).slice(0, 100)
 		if (nextName === '' || nextName === config.lastName) {
 			continue
 		}

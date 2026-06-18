@@ -4,8 +4,10 @@ import {
 	TextChannelPlayersState,
 	upsertTextChannelPlayersConfig
 } from "@/modules/textChannelPlayers/textChannelPlayersModel";
-
-const PLAYERS_PLACEHOLDER = '%players%'
+import {
+	findInvalidPluralPlaceholders,
+	PLAYERS_PLACEHOLDER
+} from "@/modules/textChannelPlayers/pluralize";
 
 export const textChannelPlayers = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.deferReply({
@@ -40,6 +42,15 @@ export const textChannelPlayers = async (interaction: ChatInputCommandInteractio
 
 	if (!nextTemplate.includes(PLAYERS_PLACEHOLDER)) {
 		await interaction.editReply(`Template должен содержать ${PLAYERS_PLACEHOLDER}.`)
+		return
+	}
+
+	const invalidPluralPlaceholders = findInvalidPluralPlaceholders(nextTemplate)
+	if (invalidPluralPlaceholders.length > 0) {
+		await interaction.editReply(
+			`Неверный plural-плейсхолдер: ${invalidPluralPlaceholders.join(', ')}. ` +
+			`Формат: %p:<одна>:<две>:<пять>%, например %p:й:я:ев%.`
+		)
 		return
 	}
 
