@@ -15,7 +15,11 @@ export type TextChannelPlayersConfig = {
 export const getTextChannelPlayersConfigs = async () => {
 	try {
 		const configsRaw = await readFile(FILE_PATH, 'utf-8')
-		return JSON.parse(configsRaw) as TextChannelPlayersConfig[]
+		const trimmed = configsRaw.trim()
+		if (trimmed === '') {
+			return []
+		}
+		return JSON.parse(trimmed) as TextChannelPlayersConfig[]
 	} catch (error) {
 		if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
 			return []

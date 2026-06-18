@@ -93,6 +93,10 @@ const commands = [
 				.setName('template')
 				.setDescription('template. %players% = count. %p:one:few:many% = RU plural, e.g. джеда%p:й:я:ев%'))
 		.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
+	new SlashCommandBuilder()
+		.setName('mhelp')
+		.setDescription('show help for all commands')
+		.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
 ]
 
 const rest = new REST({version: '10'}).setToken(TOKEN)

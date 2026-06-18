@@ -6,6 +6,7 @@ mapUrl.json
 mongodb_data/
 build/
 servers.json
+textChannelPlayers.json
 
 # Logs
 logs

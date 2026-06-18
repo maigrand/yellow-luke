@@ -6,6 +6,7 @@ import {deleteServer} from "@/modules/command/deleteServer";
 import {editServer} from "@/modules/command/editServer";
 import {rebuildServers} from "@/modules/command/rebuildServers";
 import {textChannelPlayers} from "@/modules/command/textChannelPlayers";
+import {help} from "@/modules/command/help";
 
 export const commandModule = async (client: Client) => {
 	await registerSlashCommands();
@@ -37,6 +38,8 @@ export const commandModule = async (client: Client) => {
 				await rebuildServers(interaction)
 			} else if (interaction.commandName === 'mtextchannelplayers') {
 				await textChannelPlayers(interaction)
+			} else if (interaction.commandName === 'mhelp') {
+				await help(interaction)
 			}
 		} catch (error) {
 			console.error(`Command /${interaction.commandName} failed`, error);
