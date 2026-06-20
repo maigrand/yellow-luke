@@ -134,7 +134,10 @@ const updateTextChannelPlayers = async (
 			await channel.setName(nextName, 'Update active players count')
 			await setTextChannelPlayersLastName(config.guildId, nextName)
 		} catch (error) {
-			console.error(`Could not update text channel players name for guild ${config.guildId}`, error)
+			const code = (error as { code?: unknown })?.code
+			const message = (error as { message?: string })?.message
+			const detail = code ?? message ?? 'unknown error'
+			console.warn(`Could not update text channel players name for guild ${config.guildId}: ${detail}`)
 		}
 	}
 }
@@ -169,10 +172,11 @@ async function discordRequest(
 		if (e instanceof AxiosError) {
 			if (e.response?.status != null && e.response?.status === 429) {
 				nextUpdatedAt = new Date(Date.now() + (e.response.data.retry_after * 1000 + 500));
-			} else {
-				nextUpdatedAt = new Date(Date.now() + 30000);
+				return false;
 			}
-			return false;
+			const detail = e.code ?? e.response?.status ?? 'unknown'
+			console.warn(`Discord request failed for server ${server.id} (${server.address}): ${detail}`)
+			return true;
 		} else {
 			throw e;
 		}
