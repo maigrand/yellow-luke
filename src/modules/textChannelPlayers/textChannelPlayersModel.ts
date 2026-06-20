@@ -10,6 +10,7 @@ export type TextChannelPlayersConfig = {
 	channelId: string | null;
 	template: string;
 	lastName?: string;
+	serverIds?: number[];
 }
 
 export const getTextChannelPlayersConfigs = async () => {
@@ -52,5 +53,15 @@ export const setTextChannelPlayersLastName = async (guildId: string, lastName: s
 		return
 	}
 	config.lastName = lastName
+	await setTextChannelPlayersConfigs(configs)
+}
+
+export const setTextChannelPlayersServerIds = async (guildId: string, serverIds: number[]) => {
+	const configs = await getTextChannelPlayersConfigs()
+	const config = configs.find((item) => item.guildId === guildId)
+	if (!config) {
+		return
+	}
+	config.serverIds = serverIds
 	await setTextChannelPlayersConfigs(configs)
 }

@@ -59,7 +59,7 @@ const update = async (
 		if (currentServerId !== null && !servers.some((server) => server.id === currentServerId)) {
 			currentServerId = null;
 		}
-		const playersByGuildId = new Map<string, number>();
+		const playersByServerId = new Map<number, number>();
 		for (const server of servers) {
 			if (currentServerId !== null && currentServerId !== server.id) {
 				continue;
@@ -72,10 +72,7 @@ const update = async (
 			} catch (e) {}
 
 			if (jkaResponse) {
-				playersByGuildId.set(
-					server.guildId,
-					(playersByGuildId.get(server.guildId) ?? 0) + jkaResponse.clients.length,
-				)
+				playersByServerId.set(server.id, jkaResponse.clients.length);
 			}
 
 			if (new Date().getTime() < nextUpdatedAt.getTime()) {
@@ -87,7 +84,7 @@ const update = async (
 				break;
 			}
 		}
-		await updateTextChannelPlayers(client, playersByGuildId)
+		await updateTextChannelPlayers(client, servers, playersByServerId)
 		nextUpdatedAt = new Date(Date.now() + 30000);
 	} catch (e) {
 		console.error(e);
@@ -99,7 +96,8 @@ const update = async (
 
 const updateTextChannelPlayers = async (
 	client: Client,
-	playersByGuildId: Map<string, number>,
+	servers: ServerModel[],
+	playersByServerId: Map<number, number>,
 ) => {
 	const configs = await getTextChannelPlayersConfigs()
 	for (const config of configs) {
@@ -107,7 +105,17 @@ const updateTextChannelPlayers = async (
 			continue
 		}
 
-		const players = playersByGuildId.get(config.guildId) ?? 0
+		let players = 0
+		for (const server of servers) {
+			if (server.guildId !== config.guildId) {
+				continue
+			}
+			if (config.serverIds?.length && !config.serverIds.includes(server.id)) {
+				continue
+			}
+			players += playersByServerId.get(server.id) ?? 0
+		}
+
 		const nextName = renderTemplate(config.template, players).slice(0, 100)
 		if (nextName === '' || nextName === config.lastName) {
 			continue
