@@ -20,8 +20,8 @@ export const serverTask = async (client: Client) => {
 	const emojiGuildId = process.env.EMOJI_GUILD_ID
 	if (emojiGuildId) {
 		try {
-			const guild = await client.guilds.fetch(emojiGuildId)
-			const emojis = await guild.emojis?.fetch()
+			const guild = client.guilds.cache.find((guild) => guild.id === emojiGuildId) || await client.guilds.fetch(emojiGuildId)
+			const emojis = await guild.emojis.fetch();
 			emoteOnline = emojis?.find((emoji) => emoji.name === 'greendot') ?? emoteOnline
 		} catch (error) {
 			console.warn(`Could not load greendot emoji from guild ${emojiGuildId}`, error)

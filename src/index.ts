@@ -40,6 +40,8 @@ const start = async () => {
 	client.once(Events.ClientReady, (readyClient) => {
 		const d = new Date()
 		console.log(`${d.toUTCString()} ready ${readyClient.user.tag}`)
+
+		serverTask(client);
 	})
 
 	client.on(Events.Error, (error) => {
@@ -51,7 +53,6 @@ const start = async () => {
 
 	await commandModule(client);
 	await loginWithRetry(client)
-	await serverTask(client);
 }
 
 start()
