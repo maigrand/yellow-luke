@@ -72,7 +72,10 @@ const update = async (
 			} catch (e) {}
 
 			if (jkaResponse) {
-				playersByServerId.set(server.id, jkaResponse.clients.length);
+				playersByServerId.set(server.id, jkaResponse.clients.filter((client) => {
+					const ping = client.ping as unknown
+					return ping !== 0 && ping !== '0'
+				}).length);
 			}
 
 			if (new Date().getTime() < nextUpdatedAt.getTime()) {
