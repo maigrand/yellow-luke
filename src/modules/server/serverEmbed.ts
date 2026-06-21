@@ -57,8 +57,8 @@ export const getServerEmbed = (
 	let playerIndex = 1
 	for (const client of jkaResponse.clients) {
 		let clientName = validateNickname(client.name)
-		//Discord hack with '⠀' (unicode space char) https://www.compart.com/en/unicode/U+2800
-		players += `${playerIndex})⠀${client.score} | ${client.ping} | ${normalizeJkaString(clientName)}\n`;
+		//Discord hack with unicode space char https://www.compart.com/en/unicode/U+2800
+		players += `${playerIndex})\u2800${client.score} | ${client.ping} | ${normalizeJkaString(clientName)}\n`;
 		playerIndex++;
 	}
 
